@@ -1,0 +1,16 @@
+Package: datametria
+Title: Paquete para limpieza y preprocesamiento de datos.
+Version: 0.1
+Authors@R: 
+    person(given = "César Anderson",
+           family = "Huamaní Ninahuanca",
+           role = c("aut", "cre"),
+           email = "pe.cesar.huamani.n@uni.pe")
+Description: En este paquete guardaré funciones de machine learning, para limpieza de datos y otros.
+Depends: R (>= 3.3.2)
+Imports:
+License: `use_mit_license()`, `use_gpl3_license()` or friends to
+    pick a license
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.0
