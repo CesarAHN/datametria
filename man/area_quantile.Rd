@@ -6,19 +6,16 @@
 \usage{
 area_quantile(
   x,
-  titulo = "",
   len = 4,
   color_area = NA,
   col_border = "black",
+  titulo = "",
   dureza = 2,
   ...
 )
 }
 \arguments{
 \item{x}{Vector numérico del cual se desea obtener su gráfico de densidad.}
-
-\item{titulo}{Elemento caracter que se colocará en el título del gráfico.
-Su valor por defecto es "".}
 
 \item{len}{Parámetro numérico que equivale al numero de cortes que se desea hacer, es así que si
 se desea calcular los elementos divididos por terciles, `len` toma el valor de 3. len tomo el
@@ -29,6 +26,9 @@ Su valor por defecto es NA.}
 
 \item{col_border}{Elemento caracter para especificar el color de los bordes que dividen las
 sub áreas. El color por defecto es "black".}
+
+\item{titulo}{Elemento caracter que se colocará en el título del gráfico.
+Su valor por defecto es "".}
 
 \item{dureza}{Elemento numérico que indica el grosor de la línea que divide las sub áreas.
 Es el mismo argumento que `lwd` de la función plot. Su valor por defecto es 2.}

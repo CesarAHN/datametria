@@ -12,7 +12,7 @@ vector `x`.}
 
 \item{x}{Vector numérico de donde se determina si un elemento es outliers o no.}
 
-\item{alpha}{Es el nivel de confianza con el que se desea determinar el valor crítico de
+\item{alpha}{Es el nivel de significancia con el que se desea determinar el valor crítico de
 Grubbs. El valor por defecto es de 0.05.}
 
 \item{num_colas}{Valor numérico que toma el valor de 1 si se desea calcular el valor

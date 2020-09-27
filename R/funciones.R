@@ -183,8 +183,6 @@ n_percentil<-function(x,len=4, p_corte=T){
 #' @description Devuelve sub áreas de los gráficos de densidad divididos por percentiles.
 #' Por ejemplo, terciles, cuartiles, quintiles, deciles, centiles, etc.
 #' @param x Vector numérico del cual se desea obtener su gráfico de densidad.
-#' @param titulo Elemento caracter que se colocará en el título del gráfico.
-#'  Su valor por defecto es "".
 #' @param len Parámetro numérico que equivale al numero de cortes que se desea hacer, es así que si
 #' se desea calcular los elementos divididos por terciles, `len` toma el valor de 3. len tomo el
 #' valor de 4 por defecto.
@@ -192,6 +190,8 @@ n_percentil<-function(x,len=4, p_corte=T){
 #' Su valor por defecto es NA.
 #' @param col_border Elemento caracter para especificar el color de los bordes que dividen las
 #' sub áreas. El color por defecto es "black".
+#' @param titulo Elemento caracter que se colocará en el título del gráfico.
+#' Su valor por defecto es "".
 #' @param dureza Elemento numérico que indica el grosor de la línea que divide las sub áreas.
 #' Es el mismo argumento que `lwd` de la función plot. Su valor por defecto es 2.
 #' @param ... Otros argumentos que se pueden usar en la función plot. Estos argumentos afectarán
@@ -215,25 +215,32 @@ n_percentil<-function(x,len=4, p_corte=T){
 
 #' @export
 
-
-area_quantile<-function(x, titulo="", len=4, color_area=NA, col_border="black", dureza=2, ...){
+area_quantile<-function(x, len=4, color_area=NA, col_border="black", titulo="", dureza=2, ...){
 
   if(len<1){
     stop("No se puede dividir el área en partes menores a 1. Intente con un len mayor igual a 1")
   }
 
-  if(is.na(color_area) | (is.numeric(color_area) & (len==length(color_area) | len<color_area))){
-    color_area<-terrain.colors(len, 0.7)
-  } else if(is.numeric(color_area) & len>color_area) {
-    color_area<-rep(terrain.colors(color_area, 0.7),20)
-    warning("Esta viendo colores repetidos en el gráfico.
-            Esto sucede porque número de colores para las áreas no es igual al número de divisiones.
-            len debe de ser igual a color_area, sino se especifica colores para las áreas.")
-  } else if(as.character(color_area) & len!=length(color_area)) {
-    stop("El número de colores para las áreas debe de ser igual al número de divisiones.")
-  } else {
-    color_area
-  }
+  if(sum(is.na(color_area))>=1 | (is.numeric(color_area))){
+    if(sum(is.na(color_area))>=1 | len==color_area){
+      color_area<-terrain.colors(len, 0.7)
+    } else if(is.numeric(color_area) & len>color_area) {
+      color_area<-rep(terrain.colors(color_area, 0.7), 20, length.out=len)
+      warning("Esta viendo colores repetidos en el gráfico.
+              Esto sucede porque el número de colores para las sub áreas no es igual al número de divisiones.
+              len debe de ser igual a color_area, sino se especifica colores para las áreas.")
+    } else if(is.numeric(color_area) & len<color_area) {
+      color_area<-rep(terrain.colors(color_area, 0.7),20)
+      warning("Esta viendo menos colores de los que especificó.
+              Esto sucede porque el número de colores para las sub áreas no es igual al número de divisiones.
+              len debe de ser igual a color_area, sino se especifica colores para las áreas.")
+    }
+    } else if(is.character(color_area) & len!=length(color_area)) {
+      color_area<-rep(color_area, 20, length.out=len)
+      warning("El número de colores para las sub áreas debe de ser igual al número de divisiones.")
+    } else {
+      color_area
+    }
 
   plot(density(x), main=titulo, ...)
 
@@ -273,7 +280,7 @@ area_quantile<-function(x, titulo="", len=4, color_area=NA, col_border="black", 
 #' @param x1 Elemento numérico que se desea saber si es outliers o no. Es un elemento del
 #' vector `x`.
 #' @param x Vector numérico de donde se determina si un elemento es outliers o no.
-#' @param alpha Es el nivel de confianza con el que se desea determinar el valor crítico de
+#' @param alpha Es el nivel de significancia con el que se desea determinar el valor crítico de
 #' Grubbs. El valor por defecto es de 0.05.
 #' @param num_colas Valor numérico que toma el valor de 1 si se desea calcular el valor
 #' crítico a una sola cola. Si toma el valor de 2 se calcula el valor crítico a dos colas.
@@ -325,7 +332,7 @@ test_grubbs<-function(x1, x, alpha=0.05, num_colas=2, vista=TRUE){
   if(vista==FALSE){
     v_g>G
   } else if(vista==TRUE){
-    list(Grubbs_test=v_g, Grubbs_crito=G, Elección=paste0(v_g,">",G), Resultado=v_g>G)
+    list(Grubbs_test=v_g, Grubbs_critico=G, Elección=paste0(v_g,">",G), Resultado=v_g>G)
   } else{
     stop("Tiene que ser un valor lógico TRUE o FALSE")
   }
@@ -339,7 +346,7 @@ test_grubbs<-function(x1, x, alpha=0.05, num_colas=2, vista=TRUE){
 #' @description Devuelve un vector de elementos lógicos, en donde si es TRUE un elemento
 #' significa que ese elemento es outliers según el método de Grubss.
 #' @param x Vector numérico de donde se determina si uno o varios elemento son outliers o no.
-#' @param alpha Es el nivel de confianza con el que se desea determinar el valor crítico de
+#' @param alpha Es el nivel de significancia con el que se desea determinar el valor crítico de
 #' Grubbs. El valor por defecto es de 0.05.
 #' @param num_colas Valor numérico que toma el valor de 1 si se desea calcular el valor
 #' crítico a una sola cola. Si toma el valor de 2 se calcula el valor crítico a dos colas.

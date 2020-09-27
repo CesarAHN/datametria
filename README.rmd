@@ -212,7 +212,7 @@ Podemos ver que en el primer tercil se encuentran 175 elementos, igual en el seg
 
 Esta función nos permite determinar si un elemento de un vector es outliers, mediante el test de grubss. Esta función tiene la opción de arrojar como resultado un valor lógico o todos los estadísticos de grubbs que se usaron para determinar si es o no outliers. 
 
-Esta función tiene 5 argumentos: `x1` es el elemento del cual se desea saber si es un outliers, `x` es el vector numérico que contiene a `x1`, `alpha` es el nivel de confianza con los que se desea realizar el test de grubbs, esto nos permite calcular el valor o valores críticos del test, su valor por defecto es de 0.05 (5%), `num_colas` es un valor numérico que toma por defecto 2, lo que indica que el análisis se hará a dos colas y si toma el valor de 1, el análisis se hará a una cola, por último, el argumento `vista` que es un elemento lógico en donde si toma el valor de `TRUE` entonces se muestren el valor estadístico del test de grubbs, el valor crítico del test de grubbs, la comparación que se hace y el resultado que es un valor lógico TRUE o FALSE, donde TRUE indica que el elemento es un outliers.
+Esta función tiene 5 argumentos: `x1` es el elemento del cual se desea saber si es un outliers, `x` es el vector numérico que contiene a `x1`, `alpha` indica el nivel de significancia con los que se desea realizar el test de grubbs, esto nos permite calcular el valor o valores críticos del test, su valor por defecto es de 0.05 (5%), `num_colas` es un valor numérico que toma por defecto 2, lo que indica que el análisis se hará a dos colas y si toma el valor de 1, el análisis se hará a una cola, por último, el argumento `vista` que es un elemento lógico en donde si toma el valor de `TRUE` entonces se muestren el valor estadístico del test de grubbs, el valor crítico del test de grubbs, la comparación que se hace y el resultado que es un valor lógico TRUE o FALSE, donde TRUE indica que el elemento es un outliers.
 
 Para ver un ejemplo, carguemos la tabla de datos llamada `outlier`.
 
@@ -232,4 +232,96 @@ test_grubbs(df$dv[1], df$dv, vista = FALSE)
 
 Como podemos ver con `df$dv[1]` le estamos diciendo que seleccione al primer elemento del vector `df`. Y  nos arrojó el valor de `TRUE`, lo cual indica que el primer elemento de la variable `dv` es un outlier.
 
+Recordar que el test lo realizó a dos colas y con un nivel de significancia del 0.05. Pero como se mencionó anteriormente, podemos ver el estadístico de grubbs, su valor crítico y la elección. 
 
+```{r}
+test_grubbs(df$dv[1], df$dv)
+```
+
+En efecto, el estadistico de grubss es de 5.1482 y el valor crítico de es de 3.036 y si comparamos podemos ver que el estadístico de grubbs es mayor al valor crítico, por tanto, es un outlier.
+
+Pero si nosotros deseamos calcular si más de un elemento es un valor outlier entonces, tendríamos que recurrir a un `for`, pero no será necesario ya que contamos con la función `grubbs_total` que puede hacer todo el procedimiento sin necesidad de hacer el `for`.
+
+### FUNCIÓN grubbs_total():
+
+Esta función realiza, el test de grubbs, pero a más de un elemento. 
+
+Esta función sólo cuenta con tres argumentos: `x` que es el vector de donde se desea saber el número de elementos que podrían ser outliers, esea saber si es un outliers, `x` es el vector numérico que contiene a `x1`, `alpha` que indica el nivel de significancia con los que se desea realizar el test de grubbs, esto nos permite calcular el valor o valores críticos del test, su valor por defecto es de 0.05 (5%), `num_colas` es un valor numérico que toma por defecto 2, lo que indica que el análisis se hará a dos colas y si toma el valor de 1, el análisis se hará a una cola.
+
+Para poder ver un ejemplo carguemos la tabla de datos `binlfp4` que contiene información sobre la participación de las mujeres en la fuerza laboral.
+
+```{r}
+# Cargando la base de datos.
+df<-read.table("http://r.datametria.com/wp-content/uploads/2020/09/binlfp4.txt")
+
+# Viendo las 5 primeras filas. 
+head(df)
+```
+
+Podemos ver la columna `inc` el cual representa el ingreso de las familias exceptuando el de las esposas. 
+
+Entonces, si nosotros queremos saber cuales de esos ingresos son outliers por el método de grubbs, tendremos que usar nuestra función `grubbs_total`.
+
+```{r}
+grubbs_total(df$inc)
+```
+
+Se muestra el valor de `TRUE` o `FALSE` para las 753 observaciones que se tiene. Podemos ver que la observación 25 y 26 son outliers, pero hay más en las siguientes observaciones. Para saber cuantos son outliers, podemos aplicarle la función `sum()`
+
+```{r}
+sum(grubbs_total(df$inc))
+```
+
+Nos indica que hay un total de 8 outliers. 
+
+### FUNCIÓN area_quantile():
+
+Esta función nos permite graficar la funciones de densidad de una variable y divide el gráfico por percetiles, por tanto, nos devuelve sub áreas del gráfico de densidad.
+
+la función tiene 6 argumentos: `x` es el vector numérico del cual se desea graficar el gráfico de densidad, `len` es un elemento numérico que nos indica el número de cortes que se le desea hacer al gráfico de densidad, su valor por defecto es 4 lo que indica que la gráfica se cortará por cuartiles, `color_area` es un elemento numérico o vector caracter que indica el número de colores con los que se desea pintar las sub áreas del gráfico de densidad, su valor por defecto es NA, lo que indica que tomará el número de colores que se especificó en `len` y tomará los colores de la función `terrain.colors`, por otro lado si desea que sólo se pinte de dos colores entonces, usted tendra que colocar el número 2, e igualmente usará los colores de la función `terrain.colors`, pero si desea asignarle los colores que usted desea entonces tendrá que colocar los nombres o códigos de los colores, `col_border` es un elemento caracter que se usa para especificar el color de los bordes que dividen las sub áreas, el color por defecto es "black". `titulo` es un elemento caracter y especifica el título que se le desea colocar a la gráfica, el valor por defecto es vacio, `dureza` es un elemento numérico que indica el grosor de la línea que divide las sub áreas, es el mismo argumento que `lwd` de la función plot. Su valor por defecto es 2, por último `...` indican otros argumentos que se pueden usar en la función plot, estos argumentos afectarán al plot, pero no a las sub áreas. Por ejemplo, puede usar `xlab`, `font`, `sub`, `bty`, etc. Pero no puede usar el argumento `main`, ya que ya está especificado con el argumento `título`.
+
+Para poder verlo mejor veamos un ejemplo. Para esto se usa la tabla de datos ` partyid4` que es de un estudio de las elecciones de estados unidos.
+
+```{r}
+# Cargamos la tabla de datos. 
+df<-read.table("https://r.datametria.com/wp-content/uploads/2020/09/partyid4.txt")
+
+# Viendo las primeras 5 filas. 
+head(df)
+```
+
+Vamos a graficar la densidad de la variable `age` y dividirlo por cuartiles. 
+
+```{r}
+area_quantile(df$age, titulo = "Grafico de densidad de la edad dividido por cuartiles")
+```
+
+En efecto, obtenemos el gráfico de densidad de la edad por cuartiles. Como se mencionó anteriormente, podemos usar otros argumentos para mejorar este gráfico. Para el caso se puede usar los argumentos xlab y ylab y cambiar de colores. 
+
+```{r}
+area_quantile(df$age, titulo = "Grafico de densidad de la edad dividido por cuartiles", 
+              xlab="Edad", ylab="Densidad", color_area=c("darkolivegreen1","dodgerblue","gold1","orangered"))
+```
+
+Incluso podemos juntar esta salida con la función `n_percentil()`, para poder saber el número de elementos por sub áreas. Veamos como las unimos. 
+
+```{r}
+# Definiendo el número de elementos por cuartil.
+cuartiles<-n_percentil(df$age)
+
+area_quantile(df$age, titulo = "Grafico de densidad de la edad dividido por cuartiles", 
+              xlab="Edad", ylab="", color_area=c("darkolivegreen1","dodgerblue","gold1","orangered"),
+              bty="n", yaxt="n")
+
+legend("topright", legend = c(paste("1° cuartil =", cuartiles[1]),
+                              paste("2° cuartil =", cuartiles[2]),
+                              paste("3° cuartil =", cuartiles[3]),
+                              paste("4° cuartil =", cuartiles[4])),
+       col = c("darkolivegreen1","dodgerblue","gold1","orangered"), cex=0.7, pch = 19)
+```
+
+## Actualizaciones.
+
+Por el momento sólo se ha producido 7 funciones, pero en los siguientes días espero agregar más. Si tiene alguna sugerencia o comentario puede enviarnos un correo a: **pe.cesar.huamani.n@uni.pe** o **cesar.huamani@datametria.com**
+
+Muchas gracias. 

@@ -298,7 +298,7 @@ Podemos ver que en el primer tercil se encuentran 175 elementos, igual en el seg
 
 Esta función nos permite determinar si un elemento de un vector es outliers, mediante el test de grubss. Esta función tiene la opción de arrojar como resultado un valor lógico o todos los estadísticos de grubbs que se usaron para determinar si es o no outliers.
 
-Esta función tiene 5 argumentos: `x1` es el elemento del cual se desea saber si es un outliers, `x` es el vector numérico que contiene a `x1`, `alpha` es el nivel de confianza con los que se desea realizar el test de grubbs, esto nos permite calcular el valor o valores críticos del test, su valor por defecto es de 0.05 (5%), `num_colas` es un valor numérico que toma por defecto 2, lo que indica que el análisis se hará a dos colas y si toma el valor de 1, el análisis se hará a una cola, por último, el argumento `vista` que es un elemento lógico en donde si toma el valor de `TRUE` entonces se muestren el valor estadístico del test de grubbs, el valor crítico del test de grubbs, la comparación que se hace y el resultado que es un valor lógico TRUE o FALSE, donde TRUE indica que el elemento es un outliers.
+Esta función tiene 5 argumentos: `x1` es el elemento del cual se desea saber si es un outliers, `x` es el vector numérico que contiene a `x1`, `alpha` indica el nivel de significancia con los que se desea realizar el test de grubbs, esto nos permite calcular el valor o valores críticos del test, su valor por defecto es de 0.05 (5%), `num_colas` es un valor numérico que toma por defecto 2, lo que indica que el análisis se hará a dos colas y si toma el valor de 1, el análisis se hará a una cola, por último, el argumento `vista` que es un elemento lógico en donde si toma el valor de `TRUE` entonces se muestren el valor estadístico del test de grubbs, el valor crítico del test de grubbs, la comparación que se hace y el resultado que es un valor lógico TRUE o FALSE, donde TRUE indica que el elemento es un outliers.
 
 Para ver un ejemplo, carguemos la tabla de datos llamada `outlier`.
 
@@ -325,3 +325,214 @@ test_grubbs(df$dv[1], df$dv, vista = FALSE)
 ```
 
 Como podemos ver con `df$dv[1]` le estamos diciendo que seleccione al primer elemento del vector `df`. Y nos arrojó el valor de `TRUE`, lo cual indica que el primer elemento de la variable `dv` es un outlier.
+
+Recordar que el test lo realizó a dos colas y con un nivel de significancia del 0.05. Pero como se mencionó anteriormente, podemos ver el estadístico de grubbs, su valor crítico y la elección.
+
+``` r
+test_grubbs(df$dv[1], df$dv)
+# $Grubbs_test
+# [1] 5.148213
+# 
+# $Grubbs_critico
+# [1] 3.036097
+# 
+# $Elección
+# [1] "5.14821340734902>3.03609738451121"
+# 
+# $Resultado
+# [1] TRUE
+```
+
+En efecto, el estadistico de grubss es de 5.1482 y el valor crítico de es de 3.036 y si comparamos podemos ver que el estadístico de grubbs es mayor al valor crítico, por tanto, es un outlier.
+
+Pero si nosotros deseamos calcular si más de un elemento es un valor outlier entonces, tendríamos que recurrir a un `for`, pero no será necesario ya que contamos con la función `grubbs_total` que puede hacer todo el procedimiento sin necesidad de hacer el `for`.
+
+### FUNCIÓN grubbs\_total():
+
+Esta función realiza, el test de grubbs, pero a más de un elemento.
+
+Esta función sólo cuenta con tres argumentos: `x` que es el vector de donde se desea saber el número de elementos que podrían ser outliers, esea saber si es un outliers, `x` es el vector numérico que contiene a `x1`, `alpha` que indica el nivel de significancia con los que se desea realizar el test de grubbs, esto nos permite calcular el valor o valores críticos del test, su valor por defecto es de 0.05 (5%), `num_colas` es un valor numérico que toma por defecto 2, lo que indica que el análisis se hará a dos colas y si toma el valor de 1, el análisis se hará a una cola.
+
+Para poder ver un ejemplo carguemos la tabla de datos `binlfp4` que contiene información sobre la participación de las mujeres en la fuerza laboral.
+
+``` r
+# Cargando la base de datos.
+df<-read.table("http://r.datametria.com/wp-content/uploads/2020/09/binlfp4.txt")
+
+# Viendo las 5 primeras filas. 
+head(df)
+#   caseid lfp k5 k618 age wc hc       lwg    inc age3039 age4049 age50plus
+# 1      1   0  0    3  39  0  0 0.8532125 28.363       1       0         0
+# 2      2   0  0    0  60  0  0 1.2249736 24.984       0       0         1
+# 3      3   0  0    0  43  0  0 0.8881401  9.952       0       1         0
+# 4      4   0  2    3  31  0  0 1.1580402 10.000       1       0         0
+# 5      5   0  0    2  40  1  1 1.0828638 28.200       0       1         0
+# 6      6   0  0    2  36  0  0 0.8895015  5.330       1       0         0
+#   agecat k5_0 k5_1 k5_2 k5_2plus k5_3 k5cat k618_0 k618_1 k618_23 k618_4plus
+# 1      1    1    0    0        0    0     0      0      0       1          0
+# 2      3    1    0    0        0    0     0      1      0       0          0
+# 3      2    1    0    0        0    0     0      1      0       0          0
+# 4      1    0    0    1        1    0     2      0      0       1          0
+# 5      2    1    0    0        0    0     0      0      0       1          0
+# 6      1    1    0    0        0    0     0      0      0       1          0
+#   k618cat    wages
+# 1       2 2.347175
+# 2       0 3.404076
+# 3       0 2.430605
+# 4       2 3.183688
+# 5       2 2.953125
+# 6       2 2.433916
+```
+
+Podemos ver la columna `inc` el cual representa el ingreso de las familias exceptuando el de las esposas.
+
+Entonces, si nosotros queremos saber cuales de esos ingresos son outliers por el método de grubbs, tendremos que usar nuestra función `grubbs_total`.
+
+``` r
+grubbs_total(df$inc)
+#   [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+#  [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+#  [25]  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+#  [37] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+#  [49] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+#  [61] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+#  [73] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+#  [85] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+#  [97] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE
+# [109] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [121] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [133] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [145] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [157] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [169] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [181] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [193] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [205] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [217] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [229] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [241] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [253] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [265] FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+# [277] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [289] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [301] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [313] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [325] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [337] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [349] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [361] FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE
+# [373] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [385] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [397] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [409] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [421] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [433] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [445] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [457] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [469] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [481] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [493] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [505] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [517] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [529] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [541] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [553] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [565] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [577] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [589] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [601] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [613] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [625] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE
+# [637] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [649] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [661] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [673] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [685] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [697] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [709] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [721] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [733] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# [745] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+```
+
+Se muestra el valor de `TRUE` o `FALSE` para las 753 observaciones que se tiene. Podemos ver que la observación 25 y 26 son outliers, pero hay más en las siguientes observaciones. Para saber cuantos son outliers, podemos aplicarle la función `sum()`
+
+``` r
+sum(grubbs_total(df$inc))
+# [1] 8
+```
+
+Nos indica que hay un total de 8 outliers.
+
+### FUNCIÓN area\_quantile():
+
+Esta función nos permite graficar la funciones de densidad de una variable y divide el gráfico por percetiles, por tanto, nos devuelve sub áreas del gráfico de densidad.
+
+la función tiene 6 argumentos: `x` es el vector numérico del cual se desea graficar el gráfico de densidad, `len` es un elemento numérico que nos indica el número de cortes que se le desea hacer al gráfico de densidad, su valor por defecto es 4 lo que indica que la gráfica se cortará por cuartiles, `color_area` es un elemento numérico o vector caracter que indica el número de colores con los que se desea pintar las sub áreas del gráfico de densidad, su valor por defecto es NA, lo que indica que tomará el número de colores que se especificó en `len` y tomará los colores de la función `terrain.colors`, por otro lado si desea que sólo se pinte de dos colores entonces, usted tendra que colocar el número 2, e igualmente usará los colores de la función `terrain.colors`, pero si desea asignarle los colores que usted desea entonces tendrá que colocar los nombres o códigos de los colores, `col_border` es un elemento caracter que se usa para especificar el color de los bordes que dividen las sub áreas, el color por defecto es "black". `titulo` es un elemento caracter y especifica el título que se le desea colocar a la gráfica, el valor por defecto es vacio, `dureza` es un elemento numérico que indica el grosor de la línea que divide las sub áreas, es el mismo argumento que `lwd` de la función plot. Su valor por defecto es 2, por último `...` indican otros argumentos que se pueden usar en la función plot, estos argumentos afectarán al plot, pero no a las sub áreas. Por ejemplo, puede usar `xlab`, `font`, `sub`, `bty`, etc. Pero no puede usar el argumento `main`, ya que ya está especificado con el argumento `título`.
+
+Para poder verlo mejor veamos un ejemplo. Para esto se usa la tabla de datos `partyid4` que es de un estudio de las elecciones de estados unidos.
+
+``` r
+# Cargamos la tabla de datos. 
+df<-read.table("https://r.datametria.com/wp-content/uploads/2020/09/partyid4.txt")
+
+# Viendo las primeras 5 filas. 
+head(df)
+#   caseid age age10 black educ female income income10 party party3 party7
+# 1   5156  61   6.1     0    3      0  67.50    6.750     5      3      7
+# 2   3345  41   4.1     0    2      0  37.50    3.750     5      3      7
+# 3   3376  40   4.0     0    3      1 131.25   13.125     2      1      2
+# 4   3608  27   2.7     0    3      0  32.50    3.250     5      3      7
+# 5   3810  42   4.2     0    3      0 131.25   13.125     4      3      5
+# 6   5538  56   5.6     1    2      0  32.50    3.250     1      1      1
+#   partystrong dem_ind dem_rep rep_ind
+# 1           3      NA       0       1
+# 2           3      NA       0       1
+# 3           2       1       1      NA
+# 4           3      NA       0       1
+# 5           2      NA       0       1
+# 6           1       1       1      NA
+```
+
+Vamos a graficar la densidad de la variable `age` y dividirlo por cuartiles.
+
+``` r
+area_quantile(df$age, titulo = "Grafico de densidad de la edad dividido por cuartiles")
+```
+
+![](README-unnamed-chunk-29-1.png)
+
+En efecto, obtenemos el gráfico de densidad de la edad por cuartiles. Como se mencionó anteriormente, podemos usar otros argumentos para mejorar este gráfico. Para el caso se puede usar los argumentos xlab y ylab y cambiar de colores.
+
+``` r
+area_quantile(df$age, titulo = "Grafico de densidad de la edad dividido por cuartiles", 
+              xlab="Edad", ylab="Densidad", color_area=c("darkolivegreen1","dodgerblue","gold1","orangered"))
+```
+
+![](README-unnamed-chunk-30-1.png)
+
+Incluso podemos juntar esta salida con la función `n_percentil()`, para poder saber el número de elementos por sub áreas. Veamos como las unimos.
+
+``` r
+# Definiendo el número de elementos por cuartil.
+cuartiles<-n_percentil(df$age)
+
+area_quantile(df$age, titulo = "Grafico de densidad de la edad dividido por cuartiles", 
+              xlab="Edad", ylab="", color_area=c("darkolivegreen1","dodgerblue","gold1","orangered"),
+              bty="n", yaxt="n")
+
+legend("topright", legend = c(paste("1° cuartil =", cuartiles[1]),
+                              paste("2° cuartil =", cuartiles[2]),
+                              paste("3° cuartil =", cuartiles[3]),
+                              paste("4° cuartil =", cuartiles[4])),
+       col = c("darkolivegreen1","dodgerblue","gold1","orangered"), cex=0.7, pch = 19)
+```
+
+![](README-unnamed-chunk-31-1.png)
+
+Actualizaciones.
+----------------
+
+Por el momento sólo se ha producido 7 funciones, pero en los siguientes días espero agregar más. Si tiene alguna sugerencia o comentario puede enviarnos un correo a: **<pe.cesar.huamani.n@uni.pe>** o **<cesar.huamani@datametria.com>**
+
+Muchas gracias.
