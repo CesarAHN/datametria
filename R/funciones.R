@@ -309,7 +309,7 @@ area_quantile<-function(x, titulo="", len=4, color_area=NA, col_border="black", 
 #' # [1] TRUE
 #' @export
 
-test_grubbs<-function(x1, x, alpha=0.05, num_colas=2, vista=FALSE){
+test_grubbs<-function(x1, x, alpha=0.05, num_colas=2, vista=TRUE){
   sd<-sqrt(var(x))
   md<-mean(x)
 

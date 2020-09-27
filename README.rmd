@@ -79,4 +79,157 @@ Pero si nosotros deseamos que los resultados estén en minúsculas, entonces, us
 limpiecito(x, capital = FALSE)
 ```
 
+### FUNCIÓN estadísticos():
+
+Esta función se usa para calcular los principales estadísticos como: la media, mediana, desviación estándar, mínimo, máximo, coeficiente de variación y el total de observaciones. Solo recibe 2 argumentos: `x` que tiene que ser un vector numérico y `miss` que toma un valor lógico, si es `TRUE` entonces para el cálculo de los estadísticos no se toma en cuenta los **missings values**, por el contrario si es `FALSE` si se toma en consideración los **missings values**. 
+
+Veamos un ejemplo de como usarlo. Pero primero carguemos una tabla de datos `gender`, para cargarlo usamos la siguiente sintaxis. 
+
+```{r}
+df<-read.csv("http://r.datametria.com/wp-content/uploads/2020/08/gender.csv", sep = ";")
+
+# Viendo las 5 primeras filas del data frame.
+head(df)
+```
+
+Tenemos los ingresos (`income`), los años de educación (`educ`), los años de experiencia (`jobexp`) y el género (`female`). 
+
+Entonces si nosotros queremos sacar los principales estadísticos de los ingresos vamos a usar la función `estadisticos()`. 
+
+```{r}
+estadisticos(df$income)
+```
+
+En efecto, hemos logrado obtener los principales estadísticos de los ingresos. Pero si deseo no solo de los ingresos sino también de los años de educación y los años de experiencia, entonces usaría la siguiente sintaxis.
+
+```{r}
+do.call(cbind,lapply(df[,1:3], estadisticos))
+```
+
+### FUNCIÓN dpto_peru():
+
+Esta función nos permite obtener los nombres de las regiones cuando ingresamos el número de ubigeo, también si sólo le indicamos los cuatro o dos primeros números del ubigeo. Sólo necesita un argumento el cual es `x` que es un elemento o vector numérico o caracter.
+
+Para ver un ejemplo carguemos la tabla de datos de la ENAHO del 2019, en donde se tiene en consideración el ubigeo de los encuestados. 
+
+```{r, eval=FALSE}
+df<-read.table("http://r.datametria.com/wp-content/uploads/2020/09/enaho_2019.txt", colClasses = "character")
+```
+
+```{r, echo=FALSE}
+df<-read.table("F:/enaho_2019.txt", colClasses = "character")
+```
+
+El archivo pesa 7MB puede que tarde un poco la descarga de la tabla. Una ve que ha cargado la tabla, podemos ver las 5 primeras filas. 
+
+```{r}
+head(df)
+```
+
+Vemos que la variable ubigeo es una vector con elementos de 6 caracteres. Entonces, si nosotros queremos colocar los nombres de las regiones dado este ubigeo, tedríamos que usar la siguiente sintaxis. 
+
+```{r}
+df$region<-dpto_peru(df$ubigeo)
+```
+
+Viendo las 5 primeras filas. 
+
+```{r}
+head(df)
+```
+
+En efecto podemos ver que en la columna región ahora se muestran los nombres de las regiones. 
+
+Pero se puede dar el caso que sólo tienes un vector en donde sólo se tiene los dos primeros dígitos del ubigeo. Hagamos un ejemplo, en donde se muestre el vector con sólo dos caracteres. 
+
+```{r}
+# Para esto se usará la función substring.
+df$region2<-substring(df$ubigeo, 1,2)
+
+# Convirtiendo este vector para que arroje los nombres de las regiones. 
+df$region2_a<-dpto_peru(df$region2)
+
+# Viendo las 5 primeras filas.
+head(df)
+```
+
+En efecto, se ha obtenido los nombres de las regiones. 
+
+Esta función también sirve si sólo tienes en consideración los 4 primeros caracteres del ubigeo, incluso si el vector de ubigeos es numérico. 
+
+Veamos un ejemplo para el caso de vectores numéricos. 
+
+```{r}
+# Vamos a convertir a numérico el vector region2 que tiene sólo dos caracteres. 
+df$region3<-as.numeric(df$region2)
+
+# Convirtiendo este vector para que arroje los nombres de las regiones. 
+df$region3_a<-dpto_peru(df$region3)
+
+# Viendo las 5 primeras filas.
+head(df)
+```
+
+Y como se mencionó se obtuvieron los nombres de las regiones. Para poder ver el número de encuestados por regiones vamos a realizar una tabla, no se va a considerar el factor de expansión porque el objetivo de esta guía no es aquello. 
+
+```{r}
+# Creando la tabla. 
+table(df$region)
+```
+
+### FUNCIÓN n_percentil():
+
+Esta función permite calcular el número de elementos de un vector que pertenecen a un determinado percentil. Arroja los resultados mostrando los puntos de corte o por bloques determinados por el percentil. Esta función tiene 3 argumentos: `x` que tiene que ser un vector numérico, `len` que es el número de cortes que se desea realizar, el valor por defecto es 4, es así que arrojará el número de elementos por cuartiles. Por último, el argumento `p_corte` que es un valor lógico que toma el valor por defecto de `TRUE`, lo que indica que en los resultados se muestre el número de puntos de corte, en el caso de que `len` sea 4, entonces mostrará los elementos en 4 bloques; y si toma el valor de `FALSE` entonces mostrará los resultados con los puntos de corte. 
+
+Veamos algunos ejemplos, pero primero cargamos la tabla de datos gender. 
+
+```{r}
+# Cargamos la tabla de datos gender.
+df<-read.csv("http://r.datametria.com/wp-content/uploads/2020/08/gender.csv", sep = ";")
+
+# Viendo las 5 primeras filas del data frame.
+head(df)
+
+```
+
+Vamos a calcular el número de personas por cuartil de los ingresos. Recordar que el cuartil divide en 4 a nuestros datos y el valor por defecto de `len` es 4.
+
+```{r}
+n_percentil(df$income)
+```
+
+En efecto, calcula el número de elementos por cuartil. Así tenemos que en el primer cuartil hay 125 elementos que van desde 5 a 21.5, luego 150 elementos desde mayores a 21.5 y menores iguales 24.8 y así sucesivamente. 
+
+Pero si no deseamos verlo con los puntos de corte y sólo queremos ver los bloques por percentil, entonces, tendremos que usar el argumento `p_corte` y asignarle el valor de `FALSE`. Veamos un ejemplo, pero ahora para los quintiles. 
+
+```{r}
+n_percentil(df$income, len = 3, p_corte = FALSE)
+```
+
+Podemos ver que en el primer tercil se encuentran 175 elementos, igual en el segundo tercil, por último, el tercer tercil cuenta con 150 elementos.
+
+### FUNCIÓN test_grubbs().
+
+Esta función nos permite determinar si un elemento de un vector es outliers, mediante el test de grubss. Esta función tiene la opción de arrojar como resultado un valor lógico o todos los estadísticos de grubbs que se usaron para determinar si es o no outliers. 
+
+Esta función tiene 5 argumentos: `x1` es el elemento del cual se desea saber si es un outliers, `x` es el vector numérico que contiene a `x1`, `alpha` es el nivel de confianza con los que se desea realizar el test de grubbs, esto nos permite calcular el valor o valores críticos del test, su valor por defecto es de 0.05 (5%), `num_colas` es un valor numérico que toma por defecto 2, lo que indica que el análisis se hará a dos colas y si toma el valor de 1, el análisis se hará a una cola, por último, el argumento `vista` que es un elemento lógico en donde si toma el valor de `TRUE` entonces se muestren el valor estadístico del test de grubbs, el valor crítico del test de grubbs, la comparación que se hace y el resultado que es un valor lógico TRUE o FALSE, donde TRUE indica que el elemento es un outliers.
+
+Para ver un ejemplo, carguemos la tabla de datos llamada `outlier`.
+
+```{r}
+# Cargamos la base de datos.
+df<-read.table("https://r.datametria.com/wp-content/uploads/2020/09/outlier.txt")
+
+# Veamos las 5 primeras filas.
+head(df)
+```
+
+Podemos darnos cuenta que el primer elemento del vector `dv` es 99 y quizá pueda ser un outlier. Entonces, veamos si el primer elemento de la variable `dv` es un outlier. 
+
+```{r}
+test_grubbs(df$dv[1], df$dv, vista = FALSE)
+```
+
+Como podemos ver con `df$dv[1]` le estamos diciendo que seleccione al primer elemento del vector `df`. Y  nos arrojó el valor de `TRUE`, lo cual indica que el primer elemento de la variable `dv` es un outlier.
+
 

@@ -4,7 +4,7 @@
 \alias{test_grubbs}
 \title{Test de grubbs para determinar outliers.}
 \usage{
-test_grubbs(x1, x, alpha = 0.05, num_colas = 2, vista = FALSE)
+test_grubbs(x1, x, alpha = 0.05, num_colas = 2, vista = TRUE)
 }
 \arguments{
 \item{x1}{Elemento numérico que se desea saber si es outliers o no. Es un elemento del
