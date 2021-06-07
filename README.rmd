@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 El paquete está en pleno desarrollo, por el momento sólo contamos con 7 funciones:
 
-1. **limpiecito**: Esta función limpia elementos o vectores caracter, quitándo las tildes, espacios en blanco al inicio, entre caracteres y al final. Tiene la opción de arrojar los resultados en minúsculas o mayúsculas. 
+1. **limpiecito**: Esta función limpia elementos o vectores caracter, quitando las tildes, espacios en blanco al inicio, entre caracteres y al final. Tiene la opción de arrojar los resultados en minúsculas o mayúsculas. 
 2. **estadisticos**: Esta función permite calcular los principales estadísticos como: la media, mediana, desviación estándar, mínimo, máximo, coeficiente de variación y el total de observaciones. 
 3. **dpto_peru**: Esta función permite convertir el ubigeo de las regiones de Perú a su descripción, es decir, al nombre de la región. 
 4. **n_percentil**: Esta función permite calcular el número de elementos de un vector que pertenecen a un determinado percentil. Arroja los resultados mostrando los puntos de corte o por bloques determinados por el percentil.
