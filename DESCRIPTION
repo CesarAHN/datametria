@@ -8,7 +8,7 @@ Authors@R:
            email = "pe.cesar.huamani.n@uni.pe")
 Description: En este paquete guardaré funciones de machine learning, para limpieza de datos y otros.
 Depends: R (>= 3.3.2)
-Imports:
+Imports: rvest, dplyr
 License: `use_mit_license()`, `use_gpl3_license()` or friends to
     pick a license
 Encoding: UTF-8

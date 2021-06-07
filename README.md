@@ -18,6 +18,7 @@ El paquete está en pleno desarrollo, por el momento sólo contamos con 7 funcio
 5.  **test\_grubbs**: Test que permite determinar si un elemento de un vector es outliers, mediante el test de grubss. Esta función tiene la opción de arrojar como resultado un valor lógico o todos los estadísticos de grubbs que se usaron para determinar si es o no outliers.
 6.  **grubss\_total**: Esta función realiza, el test de grubbs, que sirve para determinar si uno o varios elementos del vector son outliers.
 7.  **area\_quantile**: Esta función grafica la funciones de densidad y divide el gráfico por percetiles.
+8. **bcrp**: Esta función permite descargar las series económicas del BCRP automáticamente usando el método de web scraping. 
 
 Para usar el paquete primero se tiene que instalar el paquete `devtools` (si aún no lo tienes instalado).
 
@@ -529,6 +530,58 @@ legend("topright", legend = c(paste("1° cuartil =", cuartiles[1]),
 ```
 
 ![](README-unnamed-chunk-31-1.png)
+
+### FUNCIÓN bcrp():
+Esta función permite extraer datos de las series económicas del BCRP automáticamente usando la técnica de web scraping. Es una alternativa al uso de APIS. Creemos que esta función es más intuitiva que el uso de APIS y por tanto de más fácil acceso. Esta función requiere el uso de 2 paquetes: `rvest` y `dplyr`. Pero no se preocupe estos paquetes se descargan al instalar nuestro paquete datametría. 
+
+La función tiene sólo 3 parámetros: `periodo` que es un elemento caracter que toma el periodo de la serie que se desea descargar. Puede ser: "diarias", "mensuales", "trimestrales" o "anuales". El valor por defecto es "anuales", es decir, extraerá series anuales. Pero usted puede modificarlo por una de las opciones. La elección dependerá del periodo en la que se encuentre disponible la serie en el BCRP. `serie` es un elemento caracter que toma el nombre de la serie. El valor por defecto es "PM04925AA" que corresponde a la demanda interna. Pero usted puede colocar el código de la serie que desee descargar, recuerde que esta serie viene asociado al argumento periodo. Y por último, `nombre` que es un elemento caracter que indica el nombre con el que saldrá la serie que se desea descargar. El valor por defecto es NULL. Lo que indica que asignará el nombre de la variable que esté disponible desde la página del BCRP.
+
+Usted puede encontrar el periodo y la serie de los datos a extraer desde: https://estadisticas.bcrp.gob.pe/estadisticas/series/ayuda/metadatos
+
+A continuación mostramos 2 ejemplos en donde se extrae la demanda interna y las reservas internaciones netas. 
+
+Por ejemplo, si deseamos tener la información de la demanda interna nosotros debemos de correr la siguiente sintaxis. 
+
+``` r
+df<-bcrp(periodo="anuales", serie="PM04925AA", nombre="Demanda_Interna")
+
+```
+En el argumento `periodo` le asignamos el valor de `"anuales"` lo que implica que se descargará datos que el BCRP nos informa anualmente. En el argumento `serie` asignamos el valor de "PM04925AA" que es el código de la serie de la demanda interna que se encuentra en periodos anuales. Por último, en el argumento `nombre` asignamos el valor de `"Demanda_Interna"`.
+
+Como se puede observar los datos se están guardando en el objeto df. 
+
+Ahora apliquemos un `head()` a los datos que hemos descargado.
+
+``` r
+head(df)
+#  Fecha Demanda Interna
+#  1950           38832
+#  1951           44094
+#  1952           46430
+#  1953           49023
+#  1954           50438
+#  1955           54687
+```
+
+Como último ejemplo veamos la sintaxis para obtener las reservas internacionales netas. 
+
+``` r
+df<-bcrp(periodo="mensuales", serie="PN00026MM", nombre="RIN")
+
+```
+
+Viendo las 6 primeras filas.
+
+``` r
+head(df)
+#  Fecha   RIN
+#  Dic94 12464
+#  Ene95 12530
+#  Feb95 12759
+#  Mar95 12823
+#  Abr95 12681
+#  May95 12720
+```
 
 Actualizaciones.
 ----------------
