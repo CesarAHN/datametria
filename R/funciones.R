@@ -4,7 +4,9 @@
 #' @description Es una función para limpiar espacios por demás al inicio, final o intermedio. Asimismo
 #' elimina tildes y arroja los resultados en letras mayúsculas o minúsculas.
 #' @param x Un elemento o vector character.
-#' @param capital Valor lógico  que toma por defecto TRUE, lo que indica que los resultados
+#' @param tipo Tiene 4 opciones: no_et_minu (se quitan espacios, tiles y todo a minúsculas),
+#'  no_et_mayu (se quitan espacios, tiles y todo a mayúsculas),
+#'  no_et (se quitan espacios, tiles y se deja en el formato que estaba el texto) y no_e (solo se quitan espacios)
 #' se mostrarán en mayúsculas y si toma el valor de FALSE los resultados se mostrarán en
 #' minúsculas.
 #' @details Esta función se usará para la limpieza de base de datos.
@@ -13,31 +15,22 @@
 #' # "RAUL" "YO USO R"
 #' @export
 
-limpiecito<-function(x, capital=TRUE){
-  if(capital==TRUE){
-    x<-gsub("(^\\s+|\\s+$)","",x)
-    x<-gsub("\\s+", " ",x)
-    x<-toupper(x)
-    x<-gsub("Á", "A", x)
-    x<-gsub("É", "E", x)
-    x<-gsub("Í", "I", x)
-    x<-gsub("Ó", "O", x)
-    x<-gsub("Ú", "U", x)
-  } else if(capital==FALSE){
-    x<-gsub("(^\\s+|\\s+$)","",x)
-    x<-gsub("\\s+", " ",x)
-    x<-toupper(x)
-    x<-gsub("Á", "A", x)
-    x<-gsub("É", "E", x)
-    x<-gsub("Í", "I", x)
-    x<-gsub("Ó", "O", x)
-    x<-gsub("Ú", "U", x)
-    x<-tolower(x)
-  } else {
-    stop("capital tiene que ser una valor lógico: TRUE o FALSE")
+limpiecito<-function(x, tipo="no_et_mayu"){
+  x <- gsub("(^\\s+|\\s+$)", "", x)
+  x <- gsub("\\s+", " ", x)
+
+  if(tipo=="no_et_minu"){
+    x<-chartr("áéíóú","aeiou",tolower(x))
+  } else if(tipo=="no_et_mayu"){
+    x<-chartr("ÁÉÍÓÚ","AEIOU",toupper(x))
+  } else if(tipo=="no_et") {
+    x<-chartr("ÁÉÍÓÚáéíóú","AEIOUaeiou",x)
+  } else if(tipo=="no_e"){
+    x
   }
-  x
+  return(x)
 }
+
 
 
 # UBIGEO PERÚ.

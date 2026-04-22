@@ -4,12 +4,14 @@
 \alias{limpiecito}
 \title{Limpieza de caracteres o strings.}
 \usage{
-limpiecito(x, capital = TRUE)
+limpiecito(x, tipo = "no_et_mayu")
 }
 \arguments{
 \item{x}{Un elemento o vector character.}
 
-\item{capital}{Valor lógico  que toma por defecto TRUE, lo que indica que los resultados
+\item{tipo}{Tiene 4 opciones: no_et_minu (se quitan espacios, tiles y todo a minúsculas),
+ no_et_mayu (se quitan espacios, tiles y todo a mayúsculas),
+ no_et (se quitan espacios, tiles y se deja en el formato que estaba el texto) y no_e (solo se quitan espacios)
 se mostrarán en mayúsculas y si toma el valor de FALSE los resultados se mostrarán en
 minúsculas.}
 }

@@ -653,6 +653,34 @@ head(df)
 # 6 May95 12720
 ```
 
+## función oracion():
+
+Esta función permite colocar texto en formato oración, como se podría
+hacer en un documento word. Es ideal para preprocesar texto y para la
+elaboración de gráficos y tablas.
+
+Por ejemplo, si nosotros tenemos el siguiente vector caracter:
+
+``` r
+x<-c("oso","MACRO","HiTo","mas alla del bien y el mal","Dostoievski")
+x
+# [1] "oso"                        "MACRO"                     
+# [3] "HiTo"                       "mas alla del bien y el mal"
+# [5] "Dostoievski"
+```
+
+Podemos pasarlo todo a formato oración.
+
+``` r
+oracion(x)
+# [1] "Oso"                        "Macro"                     
+# [3] "Hito"                       "Mas alla del bien y el mal"
+# [5] "Dostoievski"
+```
+
+Si se tienen textos más complejos con espacios extra, sería bueno usar
+primero la función limpiecito y luego la función oración.
+
 ## Actualizaciones.
 
 Por el momento sólo se ha producido 7 funciones, pero en los siguientes
