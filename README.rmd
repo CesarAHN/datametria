@@ -27,6 +27,7 @@ El paquete está en pleno desarrollo, por el momento sólo contamos con 7 funcio
 5. **test_grubbs**: Test que permite determinar si un elemento de un vector es outliers, mediante el test de grubss. Esta función tiene la opción de arrojar como resultado un valor lógico o todos los estadísticos de grubbs que se usaron para determinar si es o no outliers. 
 6. **grubss_total**: Esta función realiza, el test de grubbs, que sirve para determinar si uno o varios elementos del vector son outliers.
 7. **area_quantile**:  Esta función grafica la funciones de densidad y divide el gráfico por percetiles.
+8. **oracion**: Esta función permite colocar texto en formato oración, como se podría hacer en un documento word. 
 
 Para usar el paquete primero se tiene que instalar el paquete `devtools` (si aún no lo tienes instalado). 
 
