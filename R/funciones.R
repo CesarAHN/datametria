@@ -452,3 +452,20 @@ bcrp<-function(periodo="anuales", serie="PM04925AA", nombre=NULL){
   }
   df
 }
+
+# Oración.
+
+#' @title Pasar texto a formato oración
+#' @description Esta función permite colocar texto en formato oración, como se podría hacer en un documento word.
+#' @param x Un elemento o vector character.
+#' @details Esta función se usa principalmente para la presentación de resultados.
+#' @examples
+#' oracion(c("COMERCIO DE MANZANAS", "el ARSENAL es el mejor EQUIPO del MUNDO"))
+#' # "Comercio de manzanas" "El arsenal es el mejor equipo del mundo"
+#' @export
+
+oracion<-function(x){
+  x<-tolower(x)
+  substring(x,1,1)<-toupper(substring(x,1,1))
+  x
+}
