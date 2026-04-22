@@ -32,7 +32,6 @@ limpiecito<-function(x, tipo="no_et_mayu"){
 }
 
 
-
 # UBIGEO PERÚ.
 
 #' @title Ubigeo Peru
@@ -47,35 +46,19 @@ limpiecito<-function(x, tipo="no_et_mayu"){
 #' # "AMAZONAS" "AMAZONAS"  "AMAZONAS" "JUNIN" "JUNIN" "HUANCAVELICA" "HUANCAVELICA"
 #' @export
 
-dpto_peru<-function(x) {
-  x<-ifelse(grepl("^1$|^01",x),"AMAZONAS",
-            ifelse(grepl("^2$|^02",x),"ANCASH",
-                   ifelse(grepl("^3$|^03",x),"APURIMAC",
-                          ifelse(grepl("^4$|^04",x),"AREQUIPA",
-                                 ifelse(grepl("^5$|^05",x),"AYACUCHO",
-                                        ifelse(grepl("^6$|^06",x),"CAJAMARCA",
-                                               ifelse(grepl("^7$|^07",x),"CALLAO",
-                                                      ifelse(grepl("^8$|^08",x),"CUSCO",
-                                                             ifelse(grepl("^9$|^09",x),"HUANCAVELICA",
-                                                                    ifelse(grepl("^10$|^10",x),"HUANUCO",
-                                                                           ifelse(grepl("^11$|^11",x),"ICA",
-                                                                                  ifelse(grepl("^12$|^12",x),"JUNIN",
-                                                                                         ifelse(grepl("^13$|^13",x),"LA LIBERTAD",
-                                                                                                ifelse(grepl("^14$|^14",x),"LAMBAYEQUE",
-                                                                                                       ifelse(grepl("^15$|^15",x),"LIMA",
-                                                                                                              ifelse(grepl("^16$|^16",x),"LORETO",
-                                                                                                                     ifelse(grepl("^17$|^17",x),"MADRE DE DIOS",
-                                                                                                                            ifelse(grepl("^18$|^18",x),"MOQUEGUA",
-                                                                                                                                   ifelse(grepl("^19$|^19",x),"PASCO",
-                                                                                                                                          ifelse(grepl("^20$|^20",x),"PIURA",
-                                                                                                                                                 ifelse(grepl("^21$|^21",x),"PUNO",
-                                                                                                                                                        ifelse(grepl("^22$|^22",x),"SAN MARTÍN",
-                                                                                                                                                               ifelse(grepl("^23$|^23",x),"TACNA",
-                                                                                                                                                                      ifelse(grepl("^24$|^24",x),"TUMBES",
-                                                                                                                                                                             ifelse(grepl("^25$|^25",x),"UCAYALI",NA)))))))))))))))))))))))))
-  x
-}
+dpto_peru <- function(x) {
+  cod <- sprintf("%02d", as.integer(x))
 
+  dptos <- c(
+    "01"="AMAZONAS","02"="ANCASH","03"="APURIMAC","04"="AREQUIPA","05"="AYACUCHO",
+    "06"="CAJAMARCA","07"="CALLAO","08"="CUSCO","09"="HUANCAVELICA","10"="HUANUCO",
+    "11"="ICA","12"="JUNIN","13"="LA LIBERTAD","14"="LAMBAYEQUE","15"="LIMA",
+    "16"="LORETO","17"="MADRE DE DIOS","18"="MOQUEGUA","19"="PASCO","20"="PIURA",
+    "21"="PUNO","22"="SAN MARTÍN","23"="TACNA","24"="TUMBES","25"="UCAYALI"
+  )
+
+  unname(dptos[cod])
+}
 
 # ESTADÍSTICOS.
 
