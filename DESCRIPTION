@@ -6,7 +6,7 @@ Authors@R:
            family = "Huamaní Ninahuanca",
            role = c("aut", "cre"),
            email = "pe.cesar.huamani.n@uni.pe")
-Description: En este paquete guardaré funciones de machine learning, para limpieza de datos y otros.
+Description: En este paquete contiene funciones para la limpieza de datos, algunos cálculos estadíticos y otros.
 Depends: R (>= 3.3.2)
 Imports: rvest, dplyr
 License: `use_mit_license()`, `use_gpl3_license()` or friends to
