@@ -48,6 +48,8 @@ Una vez descargado, se tiene que cargar el paquete `datametria`. Para esto corre
 library(datametria)
 ```
 
+En la documentación puede ver el argumento `tipo` con el cual podrá obtener resultados en minúsculas o con el texto del formato o solo quitar espacios. 
+
 ## EJEMPLOS DE COMO USAR LAS FUNCIONES:
 
 ### FUNCIÓN limpiecito():
@@ -73,13 +75,6 @@ limpiecito(x)
 ```
 
 Gracias a la función `limpiecito()` se ha podido eliminar los espacios y homogenizar las palabras quitandole las tíldes y convirtiendo todo a mayúscula. 
-
-Pero si nosotros deseamos que los resultados estén en minúsculas, entonces, usaremos el argumento `capital`. Veamos como:
-
-```{r}
-# Si deseamos que los resultados del vector x sean minúsculas.
-limpiecito(x, capital = FALSE)
-```
 
 ### FUNCIÓN estadísticos():
 

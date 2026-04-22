@@ -58,6 +58,10 @@ esto corremos el siguiente código:
 library(datametria)
 ```
 
+En la documentación puede ver el argumento `tipo` con el cual podrá
+obtener resultados en minúsculas o con el texto del formato o solo
+quitar espacios.
+
 ## EJEMPLOS DE COMO USAR LAS FUNCIONES:
 
 ### FUNCIÓN limpiecito():
@@ -100,16 +104,6 @@ limpiecito(x)
 Gracias a la función `limpiecito()` se ha podido eliminar los espacios y
 homogenizar las palabras quitandole las tíldes y convirtiendo todo a
 mayúscula.
-
-Pero si nosotros deseamos que los resultados estén en minúsculas,
-entonces, usaremos el argumento `capital`. Veamos como:
-
-``` r
-# Si deseamos que los resultados del vector x sean minúsculas.
-limpiecito(x, capital = FALSE)
-# [1] "mucho espacio"                    "vaya de espacios"                
-# [3] "como se hicieron tantos espacios"
-```
 
 ### FUNCIÓN estadísticos():
 
@@ -539,7 +533,7 @@ cuartiles.
 area_quantile(df$Manzana)
 ```
 
-![](README-unnamed-chunk-27-1.png)<!-- -->
+![](README-unnamed-chunk-26-1.png)<!-- -->
 
 En efecto, obtenemos el gráfico de densidad de la edad por cuartiles.
 Como se mencionó anteriormente, podemos usar otros argumentos para
@@ -551,7 +545,7 @@ area_quantile(df$Manzana,
               xlab="Manzana", ylab="Densidad", color_area=c("darkolivegreen1","dodgerblue","gold1","orangered"))
 ```
 
-![](README-unnamed-chunk-28-1.png)<!-- -->
+![](README-unnamed-chunk-27-1.png)<!-- -->
 
 Incluso podemos juntar esta salida con la función `n_percentil()`, para
 poder saber el número de elementos por sub áreas. Veamos como las
@@ -572,7 +566,7 @@ legend("topright", legend = c(paste("1° cuartil =", cuartiles[1]),
        col = c("darkolivegreen1","dodgerblue","gold1","orangered"), cex=0.7, pch = 19)
 ```
 
-![](README-unnamed-chunk-29-1.png)<!-- -->
+![](README-unnamed-chunk-28-1.png)<!-- -->
 
 ## Función bcrp():
 
