@@ -27,7 +27,8 @@ El paquete está en pleno desarrollo, por el momento sólo contamos con 7 funcio
 5. **test_grubbs**: Test que permite determinar si un elemento de un vector es outliers, mediante el test de grubss. Esta función tiene la opción de arrojar como resultado un valor lógico o todos los estadísticos de grubbs que se usaron para determinar si es o no outliers. 
 6. **grubss_total**: Esta función realiza, el test de grubbs, que sirve para determinar si uno o varios elementos del vector son outliers.
 7. **area_quantile**:  Esta función grafica la funciones de densidad y divide el gráfico por percetiles.
-8. **oracion**: Esta función permite colocar texto en formato oración, como se podría hacer en un documento word. 
+8. **bcrp**: Esta función permite descargar las series económicas del BCRP automáticamente usando el método de web scraping.
+9. **oracion**: Esta función permite colocar texto en formato oración, como se podría hacer en un documento word. 
 
 Para usar el paquete primero se tiene que instalar el paquete `devtools` (si aún no lo tienes instalado). 
 
@@ -87,18 +88,18 @@ Esta función se usa para calcular los principales estadísticos como: la media,
 Veamos un ejemplo de como usarlo. Pero primero carguemos una tabla de datos `gender`, para cargarlo usamos la siguiente sintaxis. 
 
 ```{r}
-df<-read.csv("http://r.datametria.com/wp-content/uploads/2020/08/gender.csv", sep = ";")
+set.seed(2026)
+df <- as.data.frame(matrix(sample(5:20, 1000, TRUE), ncol = 5))
+names(df) <- c("Manzana", "Banana", "Naranja", "Uva", "Mango")
 
 # Viendo las 5 primeras filas del data frame.
 head(df)
 ```
 
-Tenemos los ingresos (`income`), los años de educación (`educ`), los años de experiencia (`jobexp`) y el género (`female`). 
-
 Entonces si nosotros queremos sacar los principales estadísticos de los ingresos vamos a usar la función `estadisticos()`. 
 
 ```{r}
-estadisticos(df$income)
+estadisticos(df$Manzana)
 ```
 
 En efecto, hemos logrado obtener los principales estadísticos de los ingresos. Pero si deseo no solo de los ingresos sino también de los años de educación y los años de experiencia, entonces usaría la siguiente sintaxis.
@@ -113,15 +114,14 @@ Esta función nos permite obtener los nombres de las regiones cuando ingresamos 
 
 Para ver un ejemplo carguemos la tabla de datos de la ENAHO del 2019, en donde se tiene en consideración el ubigeo de los encuestados. 
 
-```{r, eval=FALSE}
-df<-read.table("http://r.datametria.com/wp-content/uploads/2020/09/enaho_2019.txt", colClasses = "character")
-```
 
-```{r, echo=FALSE}
-df<-read.table("F:/enaho_2019.txt", colClasses = "character")
-```
+```{r}
+set.seed(123)
 
-El archivo pesa 7MB puede que tarde un poco la descarga de la tabla. Una ve que ha cargado la tabla, podemos ver las 5 primeras filas. 
+ubigeos <- sprintf("%06d", sample(1:250000, 300, replace = FALSE))
+
+df <- data.frame(ubigeos = ubigeos)
+```
 
 ```{r}
 head(df)
@@ -130,7 +130,7 @@ head(df)
 Vemos que la variable ubigeo es una vector con elementos de 6 caracteres. Entonces, si nosotros queremos colocar los nombres de las regiones dado este ubigeo, tedríamos que usar la siguiente sintaxis. 
 
 ```{r}
-df$region<-dpto_peru(df$ubigeo)
+df$region<-dpto_peru(df$ubigeos)
 ```
 
 Viendo las 5 primeras filas. 
@@ -145,7 +145,7 @@ Pero se puede dar el caso que sólo tienes un vector en donde sólo se tiene los
 
 ```{r}
 # Para esto se usará la función substring.
-df$region2<-substring(df$ubigeo, 1,2)
+df$region2<-substring(df$ubigeos, 1,2)
 
 # Convirtiendo este vector para que arroje los nombres de las regiones. 
 df$region2_a<-dpto_peru(df$region2)
@@ -171,7 +171,7 @@ df$region3_a<-dpto_peru(df$region3)
 head(df)
 ```
 
-Y como se mencionó se obtuvieron los nombres de las regiones. Para poder ver el número de encuestados por regiones vamos a realizar una tabla, no se va a considerar el factor de expansión porque el objetivo de esta guía no es aquello. 
+Y el resultado es
 
 ```{r}
 # Creando la tabla. 
@@ -185,10 +185,10 @@ Esta función permite calcular el número de elementos de un vector que pertenec
 Veamos algunos ejemplos, pero primero cargamos la tabla de datos gender. 
 
 ```{r}
-# Cargamos la tabla de datos gender.
-df<-read.csv("http://r.datametria.com/wp-content/uploads/2020/08/gender.csv", sep = ";")
+set.seed(2026)
+df <- as.data.frame(matrix(sample(5:20, 1000, TRUE), ncol = 5))
+names(df) <- c("Manzana", "Banana", "Naranja", "Uva", "Mango")
 
-# Viendo las 5 primeras filas del data frame.
 head(df)
 
 ```
@@ -196,7 +196,7 @@ head(df)
 Vamos a calcular el número de personas por cuartil de los ingresos. Recordar que el cuartil divide en 4 a nuestros datos y el valor por defecto de `len` es 4.
 
 ```{r}
-n_percentil(df$income)
+n_percentil(df$Manzana)
 ```
 
 En efecto, calcula el número de elementos por cuartil. Así tenemos que en el primer cuartil hay 125 elementos que van desde 5 a 21.5, luego 150 elementos desde mayores a 21.5 y menores iguales 24.8 y así sucesivamente. 
@@ -204,7 +204,7 @@ En efecto, calcula el número de elementos por cuartil. Así tenemos que en el p
 Pero si no deseamos verlo con los puntos de corte y sólo queremos ver los bloques por percentil, entonces, tendremos que usar el argumento `p_corte` y asignarle el valor de `FALSE`. Veamos un ejemplo, pero ahora para los quintiles. 
 
 ```{r}
-n_percentil(df$income, len = 3, p_corte = FALSE)
+n_percentil(df$Manzana, len = 3, p_corte = FALSE)
 ```
 
 Podemos ver que en el primer tercil se encuentran 175 elementos, igual en el segundo tercil, por último, el tercer tercil cuenta con 150 elementos.
@@ -218,25 +218,35 @@ Esta función tiene 5 argumentos: `x1` es el elemento del cual se desea saber si
 Para ver un ejemplo, carguemos la tabla de datos llamada `outlier`.
 
 ```{r}
-# Cargamos la base de datos.
-df<-read.table("https://r.datametria.com/wp-content/uploads/2020/09/outlier.txt")
+
+set.seed(2025)
+
+df <- as.data.frame(matrix(sample(5:20, 100, TRUE), ncol = 5))
+names(df) <- c("Manzana", "Banana", "Naranja", "Uva", "Mango")
+
+# Introducir outliers
+df$Manzana[c(3, 15)] <- c(100, 120)
+df$Banana[10] <- 95
+df$Naranja[c(5, 18)] <- c(110, 105)
+df$Uva[7] <- 90
+df$Mango[c(2, 20)] <- c(130, 140)
 
 # Veamos las 5 primeras filas.
 head(df)
 ```
 
-Podemos darnos cuenta que el primer elemento del vector `dv` es 99 y quizá pueda ser un outlier. Entonces, veamos si el primer elemento de la variable `dv` es un outlier. 
+Podemos darnos cuenta que el segundo elemento del vector `Mango` es 130 y quizá pueda ser un outlier. Entonces, veamos si el primer elemento de la variable `Mango` es un outlier. 
 
 ```{r}
-test_grubbs(df$dv[1], df$dv, vista = FALSE)
+test_grubbs(df$Mango[2], df$Mango, vista = FALSE)
 ```
 
-Como podemos ver con `df$dv[1]` le estamos diciendo que seleccione al primer elemento del vector `df`. Y  nos arrojó el valor de `TRUE`, lo cual indica que el primer elemento de la variable `dv` es un outlier.
+Como podemos ver con `df$Mango[2]` le estamos diciendo que seleccione al primer elemento del vector `df`. Y  nos arrojó el valor de `TRUE`, lo cual indica que el primer elemento de la variable `Mango` es un outlier.
 
 Recordar que el test lo realizó a dos colas y con un nivel de significancia del 0.05. Pero como se mencionó anteriormente, podemos ver el estadístico de grubbs, su valor crítico y la elección. 
 
 ```{r}
-test_grubbs(df$dv[1], df$dv)
+test_grubbs(df$Mango[2], df$Mango)
 ```
 
 En efecto, el estadistico de grubss es de 5.1482 y el valor crítico de es de 3.036 y si comparamos podemos ver que el estadístico de grubbs es mayor al valor crítico, por tanto, es un outlier.
@@ -249,31 +259,18 @@ Esta función realiza, el test de grubbs, pero a más de un elemento.
 
 Esta función sólo cuenta con tres argumentos: `x` que es el vector de donde se desea saber el número de elementos que podrían ser outliers, esea saber si es un outliers, `x` es el vector numérico que contiene a `x1`, `alpha` que indica el nivel de significancia con los que se desea realizar el test de grubbs, esto nos permite calcular el valor o valores críticos del test, su valor por defecto es de 0.05 (5%), `num_colas` es un valor numérico que toma por defecto 2, lo que indica que el análisis se hará a dos colas y si toma el valor de 1, el análisis se hará a una cola.
 
-Para poder ver un ejemplo carguemos la tabla de datos `binlfp4` que contiene información sobre la participación de las mujeres en la fuerza laboral.
+A continuación se muestra el ejemplo:
 
 ```{r}
-# Cargando la base de datos.
-df<-read.table("http://r.datametria.com/wp-content/uploads/2020/09/binlfp4.txt")
-
-# Viendo las 5 primeras filas. 
 head(df)
 ```
 
-Podemos ver la columna `inc` el cual representa el ingreso de las familias exceptuando el de las esposas. 
-
-Entonces, si nosotros queremos saber cuales de esos ingresos son outliers por el método de grubbs, tendremos que usar nuestra función `grubbs_total`.
+Entonces, si nosotros queremos saber cuales de esos valores son outliers por el método de grubbs, tendremos que usar nuestra función `grubbs_total`.
 
 ```{r}
-grubbs_total(df$inc)
+grubbs_total(df$Manzana)
 ```
 
-Se muestra el valor de `TRUE` o `FALSE` para las 753 observaciones que se tiene. Podemos ver que la observación 25 y 26 son outliers, pero hay más en las siguientes observaciones. Para saber cuantos son outliers, podemos aplicarle la función `sum()`
-
-```{r}
-sum(grubbs_total(df$inc))
-```
-
-Nos indica que hay un total de 8 outliers. 
 
 ### FUNCIÓN area_quantile():
 
@@ -284,34 +281,34 @@ la función tiene 6 argumentos: `x` es el vector numérico del cual se desea gra
 Para poder verlo mejor veamos un ejemplo. Para esto se usa la tabla de datos ` partyid4` que es de un estudio de las elecciones de estados unidos.
 
 ```{r}
-# Cargamos la tabla de datos. 
-df<-read.table("https://r.datametria.com/wp-content/uploads/2020/09/partyid4.txt")
-
+set.seed(2026)
+df <- as.data.frame(matrix(sample(5:20, 2000, TRUE), ncol = 5))
+names(df) <- c("Manzana", "Banana", "Naranja", "Uva", "Mango")
 # Viendo las primeras 5 filas. 
 head(df)
 ```
 
-Vamos a graficar la densidad de la variable `age` y dividirlo por cuartiles. 
+Vamos a graficar la densidad de la variable `Manzana` y dividirlo por cuartiles. 
 
 ```{r}
-area_quantile(df$age, titulo = "Grafico de densidad de la edad dividido por cuartiles")
+area_quantile(df$Manzana)
 ```
 
 En efecto, obtenemos el gráfico de densidad de la edad por cuartiles. Como se mencionó anteriormente, podemos usar otros argumentos para mejorar este gráfico. Para el caso se puede usar los argumentos xlab y ylab y cambiar de colores. 
 
 ```{r}
-area_quantile(df$age, titulo = "Grafico de densidad de la edad dividido por cuartiles", 
-              xlab="Edad", ylab="Densidad", color_area=c("darkolivegreen1","dodgerblue","gold1","orangered"))
+area_quantile(df$Manzana,
+              xlab="Manzana", ylab="Densidad", color_area=c("darkolivegreen1","dodgerblue","gold1","orangered"))
 ```
 
 Incluso podemos juntar esta salida con la función `n_percentil()`, para poder saber el número de elementos por sub áreas. Veamos como las unimos. 
 
 ```{r}
 # Definiendo el número de elementos por cuartil.
-cuartiles<-n_percentil(df$age)
+cuartiles<-n_percentil(df$Manzana)
 
-area_quantile(df$age, titulo = "Grafico de densidad de la edad dividido por cuartiles", 
-              xlab="Edad", ylab="", color_area=c("darkolivegreen1","dodgerblue","gold1","orangered"),
+area_quantile(df$Manzana,  
+              xlab="Manzana", ylab="", color_area=c("darkolivegreen1","dodgerblue","gold1","orangered"),
               bty="n", yaxt="n")
 
 legend("topright", legend = c(paste("1° cuartil =", cuartiles[1]),
@@ -319,6 +316,44 @@ legend("topright", legend = c(paste("1° cuartil =", cuartiles[1]),
                               paste("3° cuartil =", cuartiles[3]),
                               paste("4° cuartil =", cuartiles[4])),
        col = c("darkolivegreen1","dodgerblue","gold1","orangered"), cex=0.7, pch = 19)
+```
+
+## Función bcrp():
+
+Esta función permite extraer datos de las series económicas del BCRP automáticamente usando la técnica de web scraping. Es una alternativa al uso de APIS. Creemos que esta función es más intuitiva que el uso de APIS y por tanto de más fácil acceso. Esta función requiere el uso de 2 paquetes: rvest y dplyr. Pero no se preocupe estos paquetes se descargan al instalar nuestro paquete datametría.
+
+La función tiene sólo 3 parámetros: periodo que es un elemento caracter que toma el periodo de la serie que se desea descargar. Puede ser: "diarias", "mensuales", "trimestrales" o "anuales". El valor por defecto es "anuales", es decir, extraerá series anuales. Pero usted puede modificarlo por una de las opciones. La elección dependerá del periodo en la que se encuentre disponible la serie en el BCRP. serie es un elemento caracter que toma el nombre de la serie. El valor por defecto es "PM04925AA" que corresponde a la demanda interna. Pero usted puede colocar el código de la serie que desee descargar, recuerde que esta serie viene asociado al argumento periodo. Y por último, nombre que es un elemento caracter que indica el nombre con el que saldrá la serie que se desea descargar. El valor por defecto es NULL. Lo que indica que asignará el nombre de la variable que esté disponible desde la página del BCRP.
+
+Usted puede encontrar el periodo y la serie de los datos a extraer desde: https://estadisticas.bcrp.gob.pe/estadisticas/series/ayuda/metadatos
+
+A continuación mostramos 2 ejemplos en donde se extrae la demanda interna y las reservas internaciones netas.
+
+Por ejemplo, si deseamos tener la información de la demanda interna nosotros debemos de correr la siguiente sintaxis.
+
+```{r}
+df<-bcrp(periodo="anuales", serie="PM04925AA", nombre="Demanda_Interna")
+```
+
+En el argumento periodo le asignamos el valor de "anuales" lo que implica que se descargará datos que el BCRP nos informa anualmente. En el argumento serie asignamos el valor de "PM04925AA" que es el código de la serie de la demanda interna que se encuentra en periodos anuales. Por último, en el argumento nombre asignamos el valor de "Demanda_Interna".
+
+Como se puede observar los datos se están guardando en el objeto df.
+
+Ahora apliquemos un head() a los datos que hemos descargado.
+
+```{r}
+head(df)
+```
+
+Como último ejemplo veamos la sintaxis para obtener las reservas internacionales netas.
+
+```{r}
+df<-bcrp(periodo="mensuales", serie="PN00026MM", nombre="RIN")
+```
+
+Viendo las 6 primeras filas.
+
+```{r}
+head(df)
 ```
 
 ## Actualizaciones.
